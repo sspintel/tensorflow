@@ -309,7 +309,9 @@ bazel clean
 # Clean up and update bazel flags
 update_bazel_flags
 # Build. This outputs the file `build_pip_package`.
-bazel build ${TF_BUILD_FLAGS} ${PIP_BUILD_TARGET} || \
+bazel build ${TF_BUILD_FLAGS} ${PIP_BUILD_TARGET} \
+--local_ram_resources=7000 --jobs=4 --local_cpu_resources=4 \
+ --config=noaws --config=nohdfs --config=nonccl --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=1"  || \
   die "Error: Bazel build failed for target: '${PIP_BUILD_TARGET}'"
 
 ###########################################################################
@@ -678,7 +680,7 @@ if [[ "$BUILD_BOTH_GPU_PACKAGES" -eq "1" ]] || [[ "$BUILD_BOTH_CPU_PACKAGES" -eq
 fi
 
 # Run tests (if any is specified).
-run_all_tests
+# run_all_tests
 
 
 if [[ ${OS_TYPE} == "ubuntu" ]]; then
